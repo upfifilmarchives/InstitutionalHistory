@@ -27,9 +27,9 @@
             <h4 class="cb-title">{{ item.title }}</h4>
           </div>
 
-          <!-- Date directly between Title and Description -->
+          <!-- Date directly between Title and Description (No blue accent border) -->
           {% if item.date %}
-            <div class="cb-date mb-2 small">
+            <div class="cb-date mb-2 small" style="border-left: none; padding-left: 0;">
               <span class="me-1">📅</span>{{ item.date }}
             </div>
           {% endif %}
@@ -59,14 +59,14 @@
               {% assign raw_img = item.objectid | append: ".png" %}
             {% endif %}
 
-            {% comment %} Convert path to direct raw link and encode spaces {% endcomment %}
+            {% comment %} Build raw URL targeting InstitutionalHistory repo {% endcomment %}
             {% assign item_img = "" %}
             {% if raw_img != "" %}
               {% if raw_img contains "http" %}
                 {% assign item_img = raw_img | replace: "github.com", "raw.githubusercontent.com" | replace: "/blob/", "/" | remove: "?raw=true" %}
               {% else %}
                 {% assign encoded_file = raw_img | url_encode | replace: "+", "%20" %}
-                {% assign item_img = "https://raw.githubusercontent.com/mrlessegers/PersonalArchive/main/objects/Sample/" | append: encoded_file %}
+                {% assign item_img = "https://raw.githubusercontent.com/upfifilmarchives/InstitutionalHistory/main/objects/" | append: encoded_file %}
               {% endif %}
             {% endif %}
             
