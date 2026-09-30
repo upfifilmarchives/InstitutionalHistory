@@ -206,6 +206,21 @@ $theme-colors: map-merge(
   }
 }
 
+/* Header & Dropdown adjustment for extra small screens */
+@media (max-width: 576px) {
+  .decade-filter-wrapper {
+    width: 100%;
+    margin-top: 10px;
+    justify-content: space-between; /* Fixed invalid property value */
+  }
+  
+  /* Stack header title and filter vertically on tiny screens */
+  .d-flex.justify-content-between.align-items-center.mb-4 {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+}
+
 /* Standard State: show short text, hide full text */
 .cb-desc-full {
   display: none;
