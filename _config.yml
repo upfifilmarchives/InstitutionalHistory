@@ -60,7 +60,7 @@ metadata: demo-metadata
 #
 # ignore stuff
 exclude:
-   - vendor/
+  - vendor/
   - vendor/bundle/
   - Gemfile
   - Gemfile.lock
