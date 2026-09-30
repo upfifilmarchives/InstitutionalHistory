@@ -60,8 +60,10 @@ metadata: demo-metadata
 #
 # ignore stuff
 exclude:
-  - .bundle/
-  - docs/
+   - vendor/
+  - vendor/bundle/
+  - Gemfile
+  - Gemfile.lock
   - Rakefile
   - README.md
   - LICENSE
