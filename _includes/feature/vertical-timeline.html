@@ -1,13 +1,45 @@
 {%- assign raw_items = site.data[site.metadata] | where_exp: 'item', 'item.date' -%}
 {%- assign items = raw_items | sort: 'date' -%}
 
-<div class="cb-vertical-timeline-wrapper py-5">
+{% comment %} Dynamically extract unique decades for the dropdown filter {% endcomment %}
+{%- assign decades_list = "" -%}
+{%- for item in items -%}
+  {%- assign year = item.date | slice: 0, 4 | plus: 0 -%}
+  {%- assign decade = year | divided_by: 10 | times: 10 -%}
+  {%- unless decades_list contains decade -%}
+    {%- assign decades_list = decades_list | append: decade | append: "," -%}
+  {%- endunless -%}
+{%- endfor -%}
+{%- assign decades = decades_list | split: "," | sort -%}
+
+<!-- Timeline Header & Upper-Right Decade Filter -->
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+  <h2 class="h4 mb-0 text-dark fw-bold">Institutional Timeline</h2>
+  
+  <div class="decade-filter-wrapper d-flex align-items-center">
+    <label for="decadeSelect" class="form-label me-2 mb-0 fw-semibold text-secondary small">Jump to / Filter:</label>
+    <select id="decadeSelect" class="form-select form-select-sm shadow-sm" style="width: auto; min-width: 140px;" onchange="filterTimelineByDecade(this.value)">
+      <option value="all" selected>All Decades</option>
+      {% for d in decades %}
+        {% if d != "" %}
+          <option value="{{ d }}">{{ d }}s</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+<!-- Timeline Wrapper -->
+<div class="cb-vertical-timeline-wrapper py-3">
   <div class="cb-timeline-spine"></div>
 
   <div class="cb-timeline-nodes">
     {% for item in items %}
       {% assign side = forloop.index | modulo: 2 %}
-      <div class="cb-timeline-row {% if side == 0 %}row-right{% else %}row-left{% endif %}">
+      {% assign item_year = item.date | slice: 0, 4 | plus: 0 %}
+      {% assign item_decade = item_year | divided_by: 10 | times: 10 %}
+
+      <div class="cb-timeline-row {% if side == 0 %}row-right{% else %}row-left{% endif %}" data-decade="{{ item_decade }}">
         
         <!-- Central Step Node -->
         <div class="cb-node-circle">
@@ -27,7 +59,7 @@
             <h4 class="cb-title">{{ item.title }}</h4>
           </div>
 
-          <!-- Date directly between Title and Description (No blue accent border) -->
+          <!-- Date directly between Title and Description -->
           {% if item.date %}
             <div class="cb-date mb-2 small" style="border-left: none; padding-left: 0;">
               <span class="me-1">📅</span>{{ item.date }}
@@ -95,3 +127,30 @@
     {% endfor %}
   </div>
 </div>
+
+<!-- JavaScript to filter timeline rows dynamically and adjust alternating sides -->
+<script>
+function filterTimelineByDecade(selectedDecade) {
+  const rows = document.querySelectorAll('.cb-timeline-row');
+  let visibleCount = 0;
+
+  rows.forEach(row => {
+    const rowDecade = row.getAttribute('data-decade');
+    
+    if (selectedDecade === 'all' || rowDecade === selectedDecade) {
+      row.style.display = 'flex';
+      
+      // Recalculate alternating left/right layout for visible items
+      row.classList.remove('row-left', 'row-right');
+      if (visibleCount % 2 === 0) {
+        row.classList.add('row-left');
+      } else {
+        row.classList.add('row-right');
+      }
+      visibleCount++;
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+</script>
