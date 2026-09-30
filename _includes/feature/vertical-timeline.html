@@ -1,0 +1,97 @@
+{%- assign raw_items = site.data[site.metadata] | where_exp: 'item', 'item.date' -%}
+{%- assign items = raw_items | sort: 'date' -%}
+
+<div class="cb-vertical-timeline-wrapper py-5">
+  <div class="cb-timeline-spine"></div>
+
+  <div class="cb-timeline-nodes">
+    {% for item in items %}
+      {% assign side = forloop.index | modulo: 2 %}
+      <div class="cb-timeline-row {% if side == 0 %}row-right{% else %}row-left{% endif %}">
+        
+        <!-- Central Step Node -->
+        <div class="cb-node-circle">
+          <div class="cb-node-inner">
+            <span class="cb-node-date">{{ item.date | slice: 0, 4 }}</span>
+          </div>
+        </div>
+
+        <!-- Timeline Content Box -->
+        <div class="cb-timeline-card">
+          <div class="cb-card-header">
+            {% if item.format contains 'image' or item.image_small %}
+              <i class="fas fa-camera cb-icon"></i>
+            {% else %}
+              <i class="fas fa-file-alt cb-icon"></i>
+            {% endif %}
+            <h4 class="cb-title">{{ item.title }}</h4>
+          </div>
+
+          <!-- Date directly between Title and Description -->
+          {% if item.date %}
+            <div class="cb-date mb-2 small">
+              <span class="me-1">📅</span>{{ item.date }}
+            </div>
+          {% endif %}
+
+          <!-- Truncated Description (Standard State) -->
+          <p class="cb-desc cb-desc-short mb-0">    
+            {{ item.description | truncatewords: 24 }}
+          </p>
+
+          <!-- Full Description (Hover State) -->
+          <p class="cb-desc cb-desc-full mb-0">
+            {{ item.description }}
+          </p>
+
+          <!-- Extended Metadata: Visible on Hover -->
+          <div class="cb-hover-metadata">
+            
+            {% comment %} Determine image source {% endcomment %}
+            {% assign raw_img = "" %}
+            {% if item.object_location %}
+              {% assign raw_img = item.object_location %}
+            {% elsif item.image_small %}
+              {% assign raw_img = item.image_small %}
+            {% elsif item.image_thumb %}
+              {% assign raw_img = item.image_thumb %}
+            {% elsif item.objectid %}
+              {% assign raw_img = item.objectid | append: ".png" %}
+            {% endif %}
+
+            {% comment %} Convert path to direct raw link and encode spaces {% endcomment %}
+            {% assign item_img = "" %}
+            {% if raw_img != "" %}
+              {% if raw_img contains "http" %}
+                {% assign item_img = raw_img | replace: "github.com", "raw.githubusercontent.com" | replace: "/blob/", "/" | remove: "?raw=true" %}
+              {% else %}
+                {% assign encoded_file = raw_img | url_encode | replace: "+", "%20" %}
+                {% assign item_img = "https://raw.githubusercontent.com/mrlessegers/PersonalArchive/main/objects/Sample/" | append: encoded_file %}
+              {% endif %}
+            {% endif %}
+            
+            <!-- Record Thumbnail (Visible only in Hover State) -->
+            {% if item_img != "" %}
+              <div class="cb-hover-thumb my-2">
+                <img src="{{ item_img }}" 
+                     alt="{{ item.title | escape }}" 
+                     class="img-thumbnail timeline-thumb img-fluid rounded shadow-sm" 
+                     loading="lazy"
+                     onerror="this.onerror=null; this.parentElement.style.display='none';">
+              </div>
+            {% endif %}
+
+            <!-- Link to Original Item Record Page -->
+            <div class="meta-link-row mt-2">
+              <a href="{{ '/item.html?id=' | relative_url | append: item.objectid }}" class="btn btn-sm btn-outline-dark w-100">
+                View Event Record &rarr;
+              </a>
+            </div>
+          
+          </div>
+        </div>
+
+      </div>
+    {% endfor %}
+  </div>
+</div>
