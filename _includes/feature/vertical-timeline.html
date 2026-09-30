@@ -1,6 +1,14 @@
 {%- assign raw_items = site.data[site.metadata] | where_exp: 'item', 'item.date' -%}
 {%- assign items = raw_items | sort: 'date' -%}
 
+{% comment %} Load CollectionBuilder theme icons for fallback media types {% endcomment %}
+{%- if site.data.theme.icons -%}
+  {% assign icons = site.data.theme.icons %}
+{%- else -%}
+  {% assign cb_icons = site.pages | where: "name", "cb-icons.svg" | first %}
+  {% assign icons = cb_icons.icons %}
+{%- endif -%}
+
 {% comment %} Dynamically extract unique decades for the dropdown filter {% endcomment %}
 {%- assign decades_list = "" -%}
 {%- for item in items -%}
@@ -79,47 +87,46 @@
           <!-- Extended Metadata: Visible on Hover -->
           <div class="cb-hover-metadata">
             
-            {% comment %} Determine image source {% endcomment %}
-            {% assign raw_img = "" %}
-            {% if item.object_location %}
-              {% assign raw_img = item.object_location %}
-            {% elsif item.image_small %}
-              {% assign raw_img = item.image_small %}
-            {% elsif item.image_thumb %}
-              {% assign raw_img = item.image_thumb %}
-            {% elsif item.objectid %}
-              {% assign raw_img = item.objectid | append: ".png" %}
-            {% endif %}
-
-            {% comment %} Build raw URL targeting InstitutionalHistory repo {% endcomment %}
-            {% assign item_img = "" %}
-            {% if raw_img != "" %}
-              {% if raw_img contains "http" %}
-                {% assign item_img = raw_img | replace: "github.com", "raw.githubusercontent.com" | replace: "/blob/", "/" | remove: "?raw=true" %}
+            <div class="cb-hover-thumb my-2 text-center">
+              {% if item.format contains 'image' or item.filename contains '.jpg' or item.filename contains '.png' %}
+                
+                {% comment %} Build relative image path based on standard CB logic {% endcomment %}
+                {% assign thumb_src = "" %}
+                {% if item.youtubeid %}
+                  {% assign thumb_src = 'https://img.youtube.com/vi/' | append: item.youtubeid | append: '/hqdefault.jpg' %}
+                {% elsif item.filename contains '/' or item.filename contains 'http' %}
+                  {% assign thumb_src = item.filename %}
+                {% elsif item.filename %}
+                  {% assign thumb_src = item.filename | prepend: '/objects/' | relative_url %}
+                {% elsif item.objectid %}
+                  {% assign thumb_src = '/objects/' | append: item.objectid | append: '.png' | relative_url %}
+                {% endif %}
+              
+                {% if thumb_src != "" %}
+                  <img src="{{ thumb_src }}" 
+                       alt="{{ item.title | escape }}" 
+                       class="img-thumbnail timeline-thumb img-fluid rounded shadow-sm" 
+                       loading="lazy"
+                       onerror="this.onerror=null; this.parentElement.style.display='none';">
+                {% endif %}
+              
               {% else %}
-                {% assign encoded_file = raw_img | url_encode | replace: "+", "%20" %}
-                {% assign item_img = "https://raw.githubusercontent.com/upfifilmarchives/InstitutionalHistory/main/objects/" | append: encoded_file %}
+              
+                {% comment %} Fallback icon for non-image formats (PDF, Audio, Video, etc.) {% endcomment %}
+                <div class="p-2 border rounded bg-light">
+                  <img class="w-25" src="{% if item.format contains 'audio' %}{{ '/assets/lib/icons/' | relative_url }}{{ icons.icon-audio | default: 'icon-audio' }}.svg{% elsif item.format contains 'video' %}{{ '/assets/lib/icons/' | relative_url }}{{ icons.icon-video | default: 'icon-video' }}.svg{% elsif item.format contains 'pdf' %}{{ '/assets/lib/icons/' | relative_url }}{{ icons.icon-pdf | default: 'icon-pdf' }}.svg{% else %}{{ '/assets/lib/icons/' | relative_url }}{{ icons.icon-default | default: 'icon-default' }}.svg{% endif %}" alt="filetype thumbnail">
+                </div>
+              
               {% endif %}
-            {% endif %}
-            
-            <!-- Record Thumbnail (Visible only in Hover State) -->
-            {% if item_img != "" %}
-              <div class="cb-hover-thumb my-2">
-                <img src="{{ item_img }}" 
-                     alt="{{ item.title | escape }}" 
-                     class="img-thumbnail timeline-thumb img-fluid rounded shadow-sm" 
-                     loading="lazy"
-                     onerror="this.onerror=null; this.parentElement.style.display='none';">
-              </div>
-            {% endif %}
-
+            </div>
+          
             <!-- Link to Original Item Record Page -->
             <div class="meta-link-row mt-2">
               <a href="{{ '/item.html?id=' | relative_url | append: item.objectid }}" class="btn btn-sm btn-outline-dark w-100">
                 View Event Record &rarr;
               </a>
             </div>
-          
+
           </div>
         </div>
 
