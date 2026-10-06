@@ -90,26 +90,26 @@
             {% assign thumb_src = '/objects/' | append: item.objectid | append: '.png' | relative_url %}
           {% endif %}
 
-          <!-- Steady State Body -->
+          <!-- Card Body: Larger Upper-Right Thumbnail + Fixed Truncated Description -->
           <div class="cb-card-body-steady clearfix">
             {% if item.format contains 'image' or item.filename contains '.jpg' or item.filename contains '.png' or item.image_small %}
               {% if thumb_src != "" %}
                 <img src="{{ thumb_src }}" 
                      alt="{{ item.title | escape }}" 
-                     class="img-thumbnail float-end ms-2 mb-1 rounded shadow-sm" 
-                     style="width: 60px; height: 60px; object-fit: cover;"
+                     class="img-thumbnail float-end ms-3 mb-2 rounded shadow-sm" 
+                     style="width: 90px; height: 90px; max-width: 35%; object-fit: cover;"
                      loading="lazy"
                      onerror="this.remove();">
               {% endif %}
             {% endif %}
 
-            <!-- Truncated Description (Standard State) -->
+            <!-- Truncated Description (Remains unchanged on hover) -->
             <p class="cb-desc cb-desc-short mb-0">    
               {{ item.description | truncatewords: 24 }}
             </p>
           </div>
 
-          <!-- Extended Metadata: Visible on Hover (Button Only) -->
+          <!-- Extended Metadata: Reveals button only on hover -->
           <div class="cb-hover-metadata">
             <div class="meta-link-row mt-2 pt-2 border-top">
               <a href="{{ '/item.html?id=' | relative_url | append: item.objectid }}" class="btn btn-sm btn-outline-dark w-100">
