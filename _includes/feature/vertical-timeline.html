@@ -74,60 +74,50 @@
             </div>
           {% endif %}
 
-          <!-- Truncated Description (Standard State) -->
-          <p class="cb-desc cb-desc-short mb-0">    
-            {{ item.description | truncatewords: 24 }}
-          </p>
+          <!-- Resolve Thumbnail Source -->
+          {% assign thumb_src = "" %}
+          {% if item.image_small %}
+            {% assign thumb_src = item.image_small | relative_url %}
+          {% elsif item.image_thumb %}
+            {% assign thumb_src = item.image_thumb | relative_url %}
+          {% elsif item.youtubeid %}
+            {% assign thumb_src = 'https://img.youtube.com/vi/' | append: item.youtubeid | append: '/hqdefault.jpg' %}
+          {% elsif item.filename contains '/' or item.filename contains 'http' %}
+            {% assign thumb_src = item.filename %}
+          {% elsif item.filename %}
+            {% assign thumb_src = item.filename | prepend: '/objects/' | relative_url %}
+          {% elsif item.objectid %}
+            {% assign thumb_src = '/objects/' | append: item.objectid | append: '.png' | relative_url %}
+          {% endif %}
 
-          <!-- Full Description (Hover State) -->
-          <p class="cb-desc cb-desc-full mb-0">
-            {{ item.description }}
-          </p>
-
-          <!-- Extended Metadata: Visible on Hover -->
-          <div class="cb-hover-metadata">
-            
-            <div class="cb-hover-thumb my-2 text-center">
-              {% if item.format contains 'image' or item.filename contains '.jpg' or item.filename contains '.png' %}
-                
-                {% comment %} Build relative image path based on standard CB logic {% endcomment %}
-                {% assign thumb_src = "" %}
-                {% if item.youtubeid %}
-                  {% assign thumb_src = 'https://img.youtube.com/vi/' | append: item.youtubeid | append: '/hqdefault.jpg' %}
-                {% elsif item.filename contains '/' or item.filename contains 'http' %}
-                  {% assign thumb_src = item.filename %}
-                {% elsif item.filename %}
-                  {% assign thumb_src = item.filename | prepend: '/objects/' | relative_url %}
-                {% elsif item.objectid %}
-                  {% assign thumb_src = '/objects/' | append: item.objectid | append: '.png' | relative_url %}
-                {% endif %}
-              
-                {% if thumb_src != "" %}
-                  <img src="{{ thumb_src }}" 
-                       alt="{{ item.title | escape }}" 
-                       class="img-thumbnail timeline-thumb img-fluid rounded shadow-sm" 
-                       loading="lazy"
-                       onerror="this.onerror=null; this.parentElement.style.display='none';">
-                {% endif %}
-              
-              {% else %}
-              
-                {% comment %} Fallback icon for non-image formats (PDF, Audio, Video, etc.) {% endcomment %}
-                <div class="p-2 border rounded bg-light">
-                  <img class="w-25" src="{% if item.format contains 'audio' %}{{ '/assets/lib/icons/' | relative_url }}{{ icons.icon-audio | default: 'icon-audio' }}.svg{% elsif item.format contains 'video' %}{{ '/assets/lib/icons/' | relative_url }}{{ icons.icon-video | default: 'icon-video' }}.svg{% elsif item.format contains 'pdf' %}{{ '/assets/lib/icons/' | relative_url }}{{ icons.icon-pdf | default: 'icon-pdf' }}.svg{% else %}{{ '/assets/lib/icons/' | relative_url }}{{ icons.icon-default | default: 'icon-default' }}.svg{% endif %}" alt="filetype thumbnail">
-                </div>
-              
+          <!-- Steady State Body -->
+          <div class="cb-card-body-steady clearfix">
+            {% if item.format contains 'image' or item.filename contains '.jpg' or item.filename contains '.png' or item.image_small %}
+              {% if thumb_src != "" %}
+                <img src="{{ thumb_src }}" 
+                     alt="{{ item.title | escape }}" 
+                     class="img-thumbnail float-end ms-2 mb-1 rounded shadow-sm" 
+                     style="width: 60px; height: 60px; object-fit: cover;"
+                     loading="lazy"
+                     onerror="this.remove();">
               {% endif %}
-            </div>
-          
-            <!-- Link to Original Item Record Page -->
-            <div class="meta-link-row mt-2">
+            {% endif %}
+
+            <!-- Truncated Description (Standard State) -->
+            <p class="cb-desc cb-desc-short mb-0">    
+              {{ item.description | truncatewords: 24 }}
+            </p>
+          </div>
+
+          <!-- Extended Metadata: Visible on Hover (Button Only) -->
+          <div class="cb-hover-metadata">
+            <div class="meta-link-row mt-2 pt-2 border-top">
               <a href="{{ '/item.html?id=' | relative_url | append: item.objectid }}" class="btn btn-sm btn-outline-dark w-100">
                 View Event Record &rarr;
               </a>
             </div>
-
           </div>
+
         </div>
 
       </div>
