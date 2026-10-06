@@ -1,15 +1,13 @@
 field,display_name,browse_link,external_link
-title,Title,
-creator,Creator,
-date,Date Created,
-description,Description,
-subject,Subjects,true
-location,Location
-latitude,Latitude
-longitude,Longitude
-source,Source
-identifier,Source Identifier,,
-type,Type,
-format,Format,
-rights,Rights,
-rightsstatement,Rights Statement,,true
+identifier,Event Identifier,,
+title,Event Title,,
+event_category,Event Category,true,
+date,Date,,
+date_precision,Date Precision,,
+period,Historical Period,true,
+description,Short Description,,
+full_description,Full Description,,
+people_organizations,People/Organizations,true,
+related_films,Related Films,true,
+location,Location,,
+source,Source Material,,
