@@ -160,37 +160,25 @@ $theme-colors: map-merge(
   margin-bottom: 0;
 }
 
-/* Hover-Reveal Metadata Drawer */
+/* Card Hover Lift & Shadow */
+.cb-timeline-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: #ced4da;
+}
+
+/* Hover-Reveal Button Container */
 .cb-hover-metadata {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.2s ease;
-  font-size: 0.8rem;
-  border-top: 1px solid #f1f3f5;
+  transition: max-height 0.3s ease, opacity 0.25s ease;
 }
 
-.cb-timeline-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  border-color: #ced4da;
-}
-
-/* Expand Drawer on Hover to fit the Photo Thumbnail & Button */
+/* Expand Button smoothly on Hover */
 .cb-timeline-card:hover .cb-hover-metadata {
-  max-height: 500px;
+  max-height: 80px;
   opacity: 1;
-  margin-top: 14px;
-  padding-top: 10px;
-}
-
-/* Thumbnail Image Styling inside Drawer */
-.cb-hover-thumb img {
-  display: block;
-  max-height: 150px;
-  width: 100%;
-  object-fit: cover;
-  border-radius: 6px;
 }
 
 /* Responsive adjustment for phones */
