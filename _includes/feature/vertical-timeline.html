@@ -109,15 +109,20 @@
             </p>
           </div>
 
-          <!-- Extended Metadata: Reveals button only on hover -->
+          <!-- Extended Metadata: Reveals full description and button on hover -->
           <div class="cb-hover-metadata">
-            <div class="meta-link-row mt-2 pt-2 border-top">
+            <div class="pt-2 border-top">
+              <p class="cb-desc cb-desc-full text-secondary small mb-2">
+                {{ item.description }}
+              </p>
+            </div>
+            
+            <div class="meta-link-row mt-1">
               <a href="{{ '/item.html?id=' | relative_url | append: item.objectid }}" class="btn btn-sm btn-outline-dark w-100">
                 View Event Record &rarr;
               </a>
             </div>
           </div>
-
         </div>
 
       </div>
