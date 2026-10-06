@@ -90,7 +90,7 @@
             {% assign thumb_src = '/objects/' | append: item.objectid | append: '.png' | relative_url %}
           {% endif %}
 
-          <!-- Card Body: Larger Upper-Right Thumbnail + Fixed Truncated Description -->
+          <!-- Card Body: Upper-Right Image + Description directly under Date -->
           <div class="cb-card-body-steady clearfix">
             {% if item.format contains 'image' or item.filename contains '.jpg' or item.filename contains '.png' or item.image_small %}
               {% if thumb_src != "" %}
@@ -103,26 +103,26 @@
               {% endif %}
             {% endif %}
 
-            <!-- Truncated Description (Remains unchanged on hover) -->
+            <!-- Truncated Description (Steady State) -->
             <p class="cb-desc cb-desc-short mb-0">    
               {{ item.description | truncatewords: 24 }}
             </p>
+
+            <!-- Full Description (Revealed directly below date on hover) -->
+            <p class="cb-desc cb-desc-full mb-0">
+              {{ item.description }}
+            </p>
           </div>
 
-          <!-- Extended Metadata: Reveals full description and button on hover -->
+          <!-- Extended Metadata: Button revealed on hover -->
           <div class="cb-hover-metadata">
-            <div class="pt-2 border-top">
-              <p class="cb-desc cb-desc-full text-secondary small mb-2">
-                {{ item.description }}
-              </p>
-            </div>
-            
-            <div class="meta-link-row mt-1">
+            <div class="meta-link-row mt-2 pt-2 border-top">
               <a href="{{ '/item.html?id=' | relative_url | append: item.objectid }}" class="btn btn-sm btn-outline-dark w-100">
                 View Event Record &rarr;
               </a>
             </div>
           </div>
+
         </div>
 
       </div>
